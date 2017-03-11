@@ -1,0 +1,36 @@
+version: '2'
+services:
+  postgres:
+    image: postgres:9.6.2
+    environment:
+      POSTGRES_DB: mydb
+      POSTGRES_USER: myuser
+      POSTGRES_PASSWORD: mypass
+    volumes:
+      - db:/var/lib/postgresql/data
+  phppgadmin:
+    image: einfallstoll/phppgadmin
+    ports:
+      - '80:80'
+    environment:
+      POSTGRES_HOST: postgres
+      POSTGRES_PORT: 5432
+      POSTGRES_DEFAULTDB: mydb
+      APACHE_SERVERNAME: localhost
+      APACHE_SERVERADMIN: admin@localhost
+      APACHE_DOCUMENTROOT: /var/www/html/public
+      APACHE_RUN_USER: www-data
+      APACHE_RUN_GROUP: www-data
+      APACHE_LOG_DIR: /var/log/apache2
+      APACHE_PID_FILE: /var/run/apache2/apache2.pid
+      APACHE_RUN_DIR: /var/run/apache2
+      APACHE_LOCK_DIR: /var/lock/apache2
+    volumes:
+      - ./App:/var/www/html
+    depends_on:
+      - postgres
+    links:
+      - postgres
+volumes:
+  db:
+
